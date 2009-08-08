@@ -10,7 +10,6 @@ Simerson's [FreeBSD Mail Toaster] [2] scripts.
 In writing this script, I've leaned considerably on Patrick Gibson's
 [virtualhost.sh][3] script.
 
---
 
 ## A couple of years later...
 
