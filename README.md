@@ -2,13 +2,13 @@
 ## OS X Toaster
 
 This script started as a means to automate James Duncan Davidson's,
-"Sandboxing Rails With MacPorts."[1] Once that was done, I thought what would
+["Sandboxing Rails With MacPorts."][1] Once that was done, I thought what would
 be cool would be to automate the complete setup of a staging server and
 subversion repository using a Mac Mini as the basis - similar to Matt
-Simerson's FreeBSD Mail Toaster [2] scripts.
+Simerson's [FreeBSD Mail Toaster] [2] scripts.
 
 In writing this script, I've leaned considerably on Patrick Gibson's
-virtualhost.sh[3] script.
+[virtualhost.sh][3] script.
 
 --
 
