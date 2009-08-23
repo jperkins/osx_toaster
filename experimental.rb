@@ -1,17 +1,29 @@
-#!/usr/bin/env bash
-# Copyright © 2009 Jason Perkins <jperkins@sneer.org>
-#
-# Permission to use, copy, modify, distribute, and sell this software and its
-# documentation for any purpose is hereby granted without fee, provided that
-# the above copyright notice appear in all copies and that both that
-# copyright notice and this permission notice appear in supporting
-# documentation.  No representations are made about the suitability of this
-# software for any purpose.  It is provided "as is" without express or
-# implied warranty.
+#!/usr/bin/env ruby -wKU
 
 
 # ---------------------------------------------------------------------------
-# test for sudo invocation and get username who invoked script
+# ruby convenience methods
+# ---------------------------------------------------------------------------
+
+def rake command=nil
+  puts "rake #{command}"
+  puts `/usr/bin/rake #{command}`
+end
+
+
+def git command=nil
+  puts "git #{command}"
+  puts `/opt/local/bin/git #{command}`
+end
+
+def gem command=nil
+  puts "gem #{command}"
+  puts `/usr/bin/gem #{command}`
+end
+
+
+# ---------------------------------------------------------------------------
+# test for sudo invocation
 # ---------------------------------------------------------------------------
 
 if [ `whoami` != 'root' ] ; then
@@ -21,7 +33,7 @@ fi
 
 
 # ---------------------------------------------------------------------------
-# test for sudo invocation and get username who invoked script
+# get username who invoked script
 # ---------------------------------------------------------------------------
 
 if [ -z $USER -o $USER = "root" ]; then
@@ -54,13 +66,6 @@ fi
 
 
 # ---------------------------------------------------------------------------
-# get os x version that we're running on
-# ---------------------------------------------------------------------------
-
-
-
-
-# ---------------------------------------------------------------------------
 # install macports
 # ---------------------------------------------------------------------------
 
@@ -76,7 +81,6 @@ cd ~
 sudo rm -rf /opt/mports
 
 
-
 # ---------------------------------------------------------------------------
 # macports install
 # ---------------------------------------------------------------------------
@@ -88,6 +92,13 @@ sudo /opt/local/bin/port install git-core +bash_completion
 sudo /opt/local/bin/port install screen
 sudo /opt/local/bin/port install watch
 sudo /opt/local/bin/port install xtail
+
+
+# ---------------------------------------------------------------------------
+# get os x version
+# ---------------------------------------------------------------------------
+
+os_x_version = `sw_vers | grep 'ProductVersion:' | grep -o '[0-9]*\.[0-9]*'`
 
 
 # ---------------------------------------------------------------------------
@@ -114,15 +125,8 @@ sudo launchctl load -w /Library/LaunchDaemons/org.macports.postgresql84-server.p
 sudo /opt/local/etc/LaunchDaemons/org.macports.postgresql84-server/postgresql84-server.wrapper start
 
 
-# ---------------------------------------------------------------------------
-# centro config/setup
-# ---------------------------------------------------------------------------
-
-# sudo su postgres -c '/opt/local/lib/postgresql84/bin/createuser -s mms'
-# sudo su postgres -c '/opt/local/lib/postgresql84/bin/createuser -s jperkins'
-#
-# /opt/local/lib/postgresql84/bin/createdb mms_development
-# /opt/local/lib/postgresql84/bin/createdb mms_test
+# TODO: add pg bin subdirectory to path in .bash_profile
+# TODO: add aliases for pg_start, pg_stop, pg_restart to .bash_profile
 
 
 # ---------------------------------------------------------------------------
@@ -134,9 +138,65 @@ sudo gem sources -a http://gems.github.com
 sudo gem update outdated
 
 
+# ---------------------------------------------------------------------------
+# modify paths
+# ---------------------------------------------------------------------------
+
+# FIXME: we don't want $PATH evalutated when this script runs, but rather
+# when /etc/bachrc is evaluated
+
+# if [ ! -z $TESTING ]; then
+#   if grep /etc/bashrc '/opt/local/bin'; then
+#     echo "resetting /etc/bashrc"
+#     mv /etc/bashrc.dist /etc/bashrc
+#   fi
+# fi
+
+# PATH="/opt/local/bin:/opt/local/sbin:/opt/local/apache2/bin:${PATH}"
+
+# add the following to the /etc/bashrc file:
+# export PATH="/opt/local/bin:/opt/local/sbin:${PATH}"
+# if ! grep /etc/bashrc '/opt/local/bin'; then
+#   cp /etc/bashrc /etc/bashrc.dist
+#   cat << __EOF > /etc/bashrc
+
+# added by the mini toaster script so that ssh can find svnserve
+# export PATH="/opt/local/bin:/opt/local/sbin:${PATH}"
+# __EOF
+# fi
 
 
+# ---------------------------------------------------------------------------
+# set system hostname and rendezous name
+# ---------------------------------------------------------------------------
+
+# TODO: setup rendevzous name
+
+# if [ -z $HOSTNAME ]; then
+#   scutil --set HostName $HOSTNAME
+# fi
 
 
+# ---------------------------------------------------------------------------
+# ~/.bash_profile mods
+# ---------------------------------------------------------------------------
+
+# if [ -f /opt/local/etc/bash_completion ]; then
+#     . /opt/local/etc/bash_completion
+# fi
+
+
+# ---------------------------------------------------------------------------
+# centro config/setup
+# ---------------------------------------------------------------------------
+
+# sudo su postgres -c '/opt/local/lib/postgresql84/bin/createuser -s mms'
+# sudo su postgres -c '/opt/local/lib/postgresql84/bin/createuser -s jperkins'
+
+# /opt/local/lib/postgresql84/bin/createdb mms_development
+# /opt/local/lib/postgresql84/bin/createdb mms_test
+
+# do git clone from depot
+# run geminstaller -c config/geminstaller.yml
 
 

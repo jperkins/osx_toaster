@@ -21,13 +21,10 @@ port it to Chef.
 
 I've managed to lose a couple of larger sections that dealt with the
 configuration of MySQL and Subversion. My work is now nearly exclusively done
-in Git, so anything Subversion specific that I add is going to reflect its
-reduced role. I'm now using MySQL beside PostgreSQL and SQLite and expect
-configs for those to be added in short order.
+with Git, so anything Subversion specific that I add is going to reflect its
+reduced role in my development. I'm now using PostgreSQL and SQLite along side
+MySQL and expect configs for those to be added in short order.
 
-Finally, I have an alternate version of this for working with Snow Leopard's
-betas. I'm not sure if that warrants its own file or incorporation with the
-existing script. I'm leaning towards the latter.
 
 Comments, suggestions, additions, etc. welcome.
 
