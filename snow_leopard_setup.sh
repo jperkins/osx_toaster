@@ -11,6 +11,20 @@ fi
 
 
 # ---------------------------------------------------------------------------
+# create list of installed ports and then uninstall them
+# ---------------------------------------------------------------------------
+
+# http://www.mail-archive.com/macports-users@lists.macosforge.org/msg12138.html
+# http://oleganza.tumblr.com/post/127709563/snow-leopard-with-legacy-macports-and-rubygems
+
+# if [ -d /opt/local ]; then
+  /opt/local/bin/port installed | sed 's/(active)$//' | sed 's/^/install/' | grep -v 'The following' > installed_ports
+  sudo /opt/local/bin/port -f uninstall installed
+  sudo rm -rf /opt/local
+# fi
+
+
+# ---------------------------------------------------------------------------
 # install macports
 # ---------------------------------------------------------------------------
 
@@ -31,29 +45,27 @@ sudo /opt/local/bin/port -v selfupdate
 cd ~
 sudo rm -rf /opt/mports
 
-# http://oleganza.tumblr.com/post/127709563/snow-leopard-with-legacy-macports-and-rubygems
 
-sudo port -f uninstall installed
+# ---------------------------------------------------------------------------
+# reinstall apps from macports
+# ---------------------------------------------------------------------------
+
+/opt/local/bin/port -F installed_ports
+
+# sudo /opt/local/bin/port install bash-completion
+# sudo /opt/local/bin/port install bzip2
+# sudo /opt/local/bin/port install fetch
+# sudo /opt/local/bin/port install git-core +bash_completion
+# sudo /opt/local/bin/port install screen
+# sudo /opt/local/bin/port install watch
+# sudo /opt/local/bin/port install xtail
 
 
 # ---------------------------------------------------------------------------
-# macports install
+# setup postgresql
 # ---------------------------------------------------------------------------
 
-sudo /opt/local/bin/port install bash-completion
-sudo /opt/local/bin/port install bzip2
-sudo /opt/local/bin/port install fetch
-sudo /opt/local/bin/port install git-core +bash_completion
-sudo /opt/local/bin/port install screen
-sudo /opt/local/bin/port install watch
-sudo /opt/local/bin/port install xtail
-
-
-# ---------------------------------------------------------------------------
-# install postgresql
-# ---------------------------------------------------------------------------
-
-sudo /opt/local/bin/port install postgresql84-server
+# sudo /opt/local/bin/port install postgresql84-server
 
 sudo mkdir -p /opt/local/var/db/postgresql84/defaultdb
 sudo chown postgres:postgres /opt/local/var/db/postgresql84/defaultdb
@@ -77,18 +89,18 @@ sudo /opt/local/etc/LaunchDaemons/org.macports.postgresql84-server/postgresql84-
 # centro config/setup
 # ---------------------------------------------------------------------------
 
-# sudo su postgres -c '/opt/local/lib/postgresql84/bin/createuser -s mms'
-# sudo su postgres -c '/opt/local/lib/postgresql84/bin/createuser -s jperkins'
-#
-# /opt/local/lib/postgresql84/bin/createdb mms_development
-# /opt/local/lib/postgresql84/bin/createdb mms_test
+sudo su postgres -c '/opt/local/lib/postgresql84/bin/createuser -s mms'
+sudo su postgres -c '/opt/local/lib/postgresql84/bin/createuser -s jperkins'
+
+/opt/local/lib/postgresql84/bin/createdb mms_development
+/opt/local/lib/postgresql84/bin/createdb mms_test
 
 # do git clone from depot
 # run geminstaller -c config/geminstaller.yml
 
 
 # ---------------------------------------------------------------------------
-# rebuild gems
+# reinstall gems
 # ---------------------------------------------------------------------------
 
 sudo gem update --system
@@ -111,7 +123,7 @@ cat installed_gems | xargs sudo env ARCHFLAGS="-Os -arch x86_64 -fno-common" gem
 sudo env ARCHFLAGS="-arch x86_64" gem install pg
 
 # http://www.schmidp.com/2009/06/14/rubyrails-and-mysql-on-snow-leopard-10a380/
-sudo env ARCHFLAGS="-Os -arch x86_64 -fno-common" gem install mysql — –with-mysql-config=/usr/local/mysql/bin/mysql_config
+# sudo env ARCHFLAGS="-Os -arch x86_64 -fno-common" gem install mysql — –with-mysql-config=/usr/local/mysql/bin/mysql_config
 
 # You can use these flags for jscruggs-metric_fu too :
 # sudo env ARCHFLAGS="-Os -arch x86_64 -fno-common" gem install jscruggs-metric_fu
